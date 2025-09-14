@@ -140,3 +140,53 @@ h1,
 h2{
     text-align: center;
 }
+
+.category-filter {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.category-filter button {
+    padding: 10px 20px;
+    border: 2px solid #000;
+    background: white;
+    color: #000;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.category-filter button.active,
+.category-filter button:hover {
+    background: #000;
+    color: white;
+}
+
+.product-category {
+    color: #666;
+    font-style: italic;
+    margin: 5px 0;
+}
+
+.orders-section {
+    margin: 30px 0;
+}
+
+.orders-section table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.orders-section th,
+.orders-section td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.orders-section th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}

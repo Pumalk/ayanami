@@ -1,8 +1,7 @@
 <?php
 session_start();
-require_once 'config.php'; // Подключаем БД
+require_once 'config.php';
 
-// Проверяем, авторизован ли пользователь
 if (!isset($_SESSION['user_id'])) {
     header('HTTP/1.1 403 Forbidden');
     die(json_encode(['success' => false, 'message' => 'Необходима авторизация.']));
@@ -11,20 +10,15 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $result = ['success' => false, 'message' => ''];
 
-// Папка для загрузки аватаров
+// Определяем тип загрузки (аватар или товар)
+$is_avatar = true; // По умолчанию для обратной совместимости
+
 $uploadDir = __DIR__ . '/uploads/avatars/';
-// Создаем папку, если её нет
 if (!file_exists($uploadDir)) {
-    if (!mkdir($uploadDir, 0777, true)) {
-        $result['message'] = 'Ошибка создания директории для загрузки.';
-        echo json_encode($result);
-        exit;
-    }
+    mkdir($uploadDir, 0777, true);
 }
 
-// Проверяем, что файл был отправлен
 if (!isset($_FILES['attachment']) || $_FILES['attachment']['error'] !== UPLOAD_ERR_OK) {
-    // Обработка различных ошибок загрузки
     $errorMessages = [
         UPLOAD_ERR_INI_SIZE => 'Размер файла превышает значение upload_max_filesize в php.ini.',
         UPLOAD_ERR_FORM_SIZE => 'Размер файла превышает значение MAX_FILE_SIZE в HTML-форме.',
@@ -43,65 +37,66 @@ if (!isset($_FILES['attachment']) || $_FILES['attachment']['error'] !== UPLOAD_E
 
 $file = $_FILES['attachment'];
 
-// 1. Проверка размера файла (< 8MB)
-$maxSize = 8 * 1024 * 1024; // 8MB в байтах
-if ($file['size'] > $maxSize) {
-    $result['message'] = 'Файл слишком большой. Максимальный размер: 8MB.';
-    echo json_encode($result);
-    exit;
+// Проверки ТОЛЬКО для аватаров
+if ($is_avatar) {
+    // 1. Проверка размера файла (< 8MB)
+    $maxSize = 8 * 1024 * 1024;
+    if ($file['size'] > $maxSize) {
+        $result['message'] = 'Файл слишком большой. Максимальный размер: 8MB.';
+        echo json_encode($result);
+        exit;
+    }
+
+    // 2. Проверка типа файла
+    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    $fileInfo = pathinfo($file['name']);
+    $extension = strtolower($fileInfo['extension'] ?? '');
+
+    if (!in_array($extension, $allowedExtensions)) {
+        $result['message'] = 'Можно загружать только изображения (JPG, PNG, GIF, WEBP).';
+        echo json_encode($result);
+        exit;
+    }
+
+    // 3. Проверка MIME-типа
+    $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    $fileMimeType = mime_content_type($file['tmp_name']);
+
+    if (!in_array($fileMimeType, $allowedMimeTypes)) {
+        $result['message'] = 'Недопустимый тип файла.';
+        echo json_encode($result);
+        exit;
+    }
+
+    // 4. Проверка: является ли файл изображением
+    $imageInfo = @getimagesize($file['tmp_name']);
+    if (!$imageInfo) {
+        $result['message'] = 'Загружаемый файл не является изображением.';
+        echo json_encode($result);
+        exit;
+    }
+
+    // 5. Проверка размеров изображения
+    list($width, $height) = $imageInfo;
+    $maxWidth = 1280;
+    $maxHeight = 720;
+
+    if ($width > $maxWidth || $height > $maxHeight) {
+        $result['message'] = "Размер изображения не должен превышать {$maxWidth}x{$maxHeight}px.";
+        echo json_encode($result);
+        exit;
+    }
 }
 
-// 2. Проверка типа файла (расширения)
-$allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-$fileInfo = pathinfo($file['name']);
-$extension = strtolower($fileInfo['extension'] ?? '');
-
-if (!in_array($extension, $allowedExtensions)) {
-    $result['message'] = 'Можно загружать только изображения (JPG, PNG, GIF, WEBP).';
-    echo json_encode($result);
-    exit;
-}
-
-// 3. Проверка MIME-типа файла (дополнительная проверка)
-$allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-$fileMimeType = mime_content_type($file['tmp_name']);
-
-if (!in_array($fileMimeType, $allowedMimeTypes)) {
-    $result['message'] = 'Недопустимый тип файла.';
-    echo json_encode($result);
-    exit;
-}
-
-// 4. Проверка: является ли файл действительным изображением
-$imageInfo = @getimagesize($file['tmp_name']);
-if (!$imageInfo) {
-    $result['message'] = 'Загружаемый файл не является изображением.';
-    echo json_encode($result);
-    exit;
-}
-
-// 5. Проверка размеров изображения (макс. 1280x720px)
-list($width, $height) = $imageInfo;
-$maxWidth = 1280;
-$maxHeight = 720;
-
-if ($width > $maxWidth || $height > $maxHeight) {
-    $result['message'] = "Размер изображения не должен превышать {$maxWidth}x{$maxHeight}px. Текущий размер: {$width}x{$height}px.";
-    echo json_encode($result);
-    exit;
-}
-
-// Удаляем старый аватар пользователя, если он есть
+// Удаляем старый аватар
 try {
     $stmt = $pdo->prepare("SELECT avatar FROM users WHERE id = ?");
     $stmt->execute([$user_id]);
     $oldAvatar = $stmt->fetchColumn();
     
     if ($oldAvatar) {
-        // Убираем '../' из пути для корректного удаления
         $cleanPath = str_replace('../', '', $oldAvatar);
         $oldAvatarPath = __DIR__ . '/' . $cleanPath;
-        
         if (file_exists($oldAvatarPath)) {
             unlink($oldAvatarPath);
         }
@@ -110,13 +105,13 @@ try {
     error_log('Ошибка при удалении старого аватара: ' . $e->getMessage());
 }
 
-// Создаем новое уникальное имя для файла
+// Сохраняем новый файл
+$fileInfo = pathinfo($file['name']);
+$extension = strtolower($fileInfo['extension']);
 $newFileName = 'avatar_' . $user_id . '_' . time() . '.' . $extension;
 $newFilePath = $uploadDir . $newFileName;
 
-// Пытаемся переместить файл
 if (move_uploaded_file($file['tmp_name'], $newFilePath)) {
-    // Сохраняем путь к файлу в БД (относительный путь БЕЗ ../)
     $relativePath = 'uploads/avatars/' . $newFileName;
     
     try {
@@ -125,12 +120,9 @@ if (move_uploaded_file($file['tmp_name'], $newFilePath)) {
             $result['success'] = true;
             $result['message'] = 'Аватар успешно обновлен!';
             $result['path'] = $relativePath;
-            
-            // Обновляем путь к аватару в сессии
             $_SESSION['user_avatar'] = $relativePath;
         } else {
             $result['message'] = 'Ошибка при сохранении в базу данных.';
-            // Удаляем загруженный файл, если запись в БД не удалась
             if (file_exists($newFilePath)) {
                 unlink($newFilePath);
             }
@@ -142,16 +134,9 @@ if (move_uploaded_file($file['tmp_name'], $newFilePath)) {
         }
     }
 } else {
-    // Ошибка перемещения файла
     $result['message'] = 'Ошибка при загрузке файла на сервер.';
-    
-    // Проверяем права на запись в директорию
-    if (!is_writable($uploadDir)) {
-        $result['message'] .= ' Нет прав для записи в директорию загрузки.';
-    }
 }
 
-// Устанавливаем правильный заголовок и отправляем JSON-ответ
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($result, JSON_UNESCAPED_UNICODE);
 ?>

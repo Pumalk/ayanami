@@ -2,8 +2,17 @@
 session_start();
 require_once '../config.php';
 
-// Запрос к базе данных для получения всех товаров
-$stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC");
+// Получаем категорию из GET-параметра
+$category = $_GET['category'] ?? 'all';
+
+// Формируем SQL запрос в зависимости от выбранной категории
+if ($category === 'all') {
+    $stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC");
+} else {
+    $stmt = $pdo->prepare("SELECT * FROM products WHERE category = ? ORDER BY created_at DESC");
+    $stmt->execute([$category]);
+}
+
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
@@ -14,14 +23,11 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="catalog.css">
     <title>Ayanami - Каталог</title>
     <script>
-        // Функция добавления в корзину
         function addToCart(productId) {
             <?php if (isset($_SESSION['user_id'])): ?>
                 fetch('../cart_actions.php', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                     body: 'action=add&product_id=' + productId
                 })
                 .then(response => response.json())
@@ -33,13 +39,16 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
                     alert('Произошла ошибка!');
                 });
             <?php else: ?>
                 alert('Для добавления в корзину необходимо авторизоваться!');
                 window.location.href = '../auth/auth.php';
             <?php endif; ?>
+        }
+
+        function filterCategory(category) {
+            window.location.href = 'catalog.php?category=' + category;
         }
     </script>
 </head>
@@ -59,6 +68,15 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <main>
         <section>
             <h2>Каталог</h2>
+            
+            <!-- Фильтр по категориям -->
+            <div class="category-filter">
+                <button onclick="filterCategory('all')" class="<?= $category === 'all' ? 'active' : '' ?>">Все товары</button>
+                <button onclick="filterCategory('лонгслив')" class="<?= $category === 'лонгслив' ? 'active' : '' ?>">Лонгсливы</button>
+                <button onclick="filterCategory('зип-худи')" class="<?= $category === 'зип-худи' ? 'active' : '' ?>">Зип-худи</button>
+                <button onclick="filterCategory('куртка')" class="<?= $category === 'куртка' ? 'active' : '' ?>">Куртки</button>
+            </div>
+
             <div class="portfolio-grid">
                 <?php if (empty($products)): ?>
                     <p class="no-products">Товаров пока нет.</p>
@@ -69,6 +87,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <img src="../<?= !empty($product['image']) ? htmlspecialchars($product['image']) : 'img/placeholder.jpg' ?>" alt="<?= htmlspecialchars($product['name']) ?>">
                             </div>
                             <h1><?= htmlspecialchars($product['name']) ?></h1>
+                            <p class="product-category">Категория: <?= htmlspecialchars($product['category']) ?></p>
                             <p><?= htmlspecialchars($product['description']) ?></p>
                             <div class="price-card">
                                 <p class="price"><?= number_format($product['price'], 2, '.', ' ') ?> руб.</p>

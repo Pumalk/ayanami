@@ -21,14 +21,14 @@ if (!$user) {
 }
 
 // Получаем корзину пользователя
-$cart_stmt = $pdo->prepare("
-    SELECT c.*, p.name, p.price, p.image 
-    FROM cart c 
-    JOIN products p ON c.product_id = p.id 
-    WHERE c.user_id = ?
-");
+$cart_stmt = $pdo->prepare("SELECT c.*, p.name, p.price, p.image FROM cart c JOIN products p ON c.product_id = p.id WHERE c.user_id = ?");
 $cart_stmt->execute([$user_id]);
 $cart_items = $cart_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Получаем историю заказов
+$orders_stmt = $pdo->prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC");
+$orders_stmt->execute([$user_id]);
+$orders = $orders_stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $total_price = 0;
 foreach ($cart_items as $item) {
@@ -67,30 +67,25 @@ foreach ($cart_items as $item) {
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
                 document.getElementById('avatar-message').textContent = 'Произошла ошибка!';
-                document.getElementById('avatar-message').style.color = 'red';
             });
         }
 
         function updateCartQuantity(productId, change) {
             const quantityInput = document.getElementById('quantity-' + productId);
             let newQuantity = parseInt(quantityInput.value) + change;
-            
             if (newQuantity < 1) newQuantity = 1;
             
             fetch('../cart_actions.php', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: 'action=update&product_id=' + productId + '&quantity=' + newQuantity
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     quantityInput.value = newQuantity;
-                    updateTotalPrice();
+                    location.reload();
                 } else {
                     alert('Ошибка: ' + data.message);
                 }
@@ -101,9 +96,7 @@ foreach ($cart_items as $item) {
             if (confirm('Удалить товар из корзины?')) {
                 fetch('../cart_actions.php', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                     body: 'action=remove&product_id=' + productId
                 })
                 .then(response => response.json())
@@ -115,11 +108,6 @@ foreach ($cart_items as $item) {
                     }
                 });
             }
-        }
-
-        function updateTotalPrice() {
-            // Здесь можно добавить логику пересчета общей суммы
-            // если нужно динамическое обновление без перезагрузки
         }
 
         function submitOrder(event) {
@@ -164,16 +152,8 @@ foreach ($cart_items as $item) {
             <div class="avatar-section">
                 <div class="avatar-preview">
                     <?php if (!empty($user['avatar'])): ?>
-                        <?php
-                        $avatarPath = $user['avatar'];
-                        if (strpos($avatarPath, '../') === false) {
-                            $avatarPath = '../' . $avatarPath;
-                        }
-                        ?>
-                        <img src="<?= htmlspecialchars($avatarPath) ?>" alt="Аватар пользователя">
-                        <div class="no-avatar" style="display: none;">Нет аватара</div>
+                        <img src="../<?= htmlspecialchars($user['avatar']) ?>" alt="Аватар пользователя">
                     <?php else: ?>
-                        <img src="" alt="Аватар пользователя" style="display: none;">
                         <div class="no-avatar">Нет аватара</div>
                     <?php endif; ?>
                 </div>
@@ -195,6 +175,49 @@ foreach ($cart_items as $item) {
                     <p><strong>Дата рождения:</strong> <?= htmlspecialchars($user['birth_date']) ?></p>
                 </div>
             </details> 
+        </section>
+
+        <!-- История заказов -->
+        <section class="orders-section">
+            <h2>История заказов</h2>
+            <?php if (empty($orders)): ?>
+                <p>У вас пока нет заказов</p>
+            <?php else: ?>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>№ Заказа</th>
+                            <th>Дата</th>
+                            <th>Сумма</th>
+                            <th>Статус</th>
+                            <th>Телефон</th>
+                            <th>Адрес</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($orders as $order): ?>
+                        <tr>
+                            <td><?= $order['id'] ?></td>
+                            <td><?= date('d.m.Y H:i', strtotime($order['created_at'])) ?></td>
+                            <td><?= number_format($order['total_amount'], 2, '.', ' ') ?> руб.</td>
+                            <td>
+                                <?php
+                                $status_labels = [
+                                    'pending' => 'Ожидание',
+                                    'processing' => 'В обработке',
+                                    'completed' => 'Завершен',
+                                    'cancelled' => 'Отменен'
+                                ];
+                                echo $status_labels[$order['status']];
+                                ?>
+                            </td>
+                            <td><?= htmlspecialchars($order['phone']) ?></td>
+                            <td><?= htmlspecialchars($order['address']) ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
         </section>
     
         <section class="cart-section" id="cart">
@@ -244,7 +267,7 @@ foreach ($cart_items as $item) {
                 <form class="order-form" onsubmit="submitOrder(event)">
                     <label>
                         Телефон:
-                        <input type="tel" name="phone" required pattern="[\+]?[0-9\s\-\(\)]+" title="Введите корректный номер телефона">
+                        <input type="tel" name="phone" required pattern="[\+]?[0-9\s\-\(\)]+">
                     </label>
                     <label>
                         Адрес доставки:

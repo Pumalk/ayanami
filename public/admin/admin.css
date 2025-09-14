@@ -345,3 +345,46 @@ table tr:hover {
     color: white;
     border-color: black;
 }
+
+/* Стили для статусов заказов */
+.status-pending {
+    color: #ff9800;
+    font-weight: bold;
+}
+
+.status-processing {
+    color: #2196F3;
+    font-weight: bold;
+}
+
+.status-completed {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.status-cancelled {
+    color: #f44336;
+    font-weight: bold;
+}
+
+/* Сетка для деталей заказа */
+.order-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.order-details-section {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.order-details-section h3 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+}
