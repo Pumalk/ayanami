@@ -105,7 +105,6 @@ footer {
     width: 100%; /* Ширина 100% */
     bottom: 0; /* Положение внизу */
     margin: 0 auto;
-    margin-top: 50vw; /* Отступ сверху */
 }
 
 footer div{
@@ -165,12 +164,6 @@ h2{
 .category-filter button:hover {
     background: #000;
     color: white;
-}
-
-.product-category {
-    color: #666;
-    font-style: italic;
-    margin: 5px 0;
 }
 
 .orders-section {

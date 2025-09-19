@@ -2,7 +2,7 @@
 session_start();
 // config.php
 
-$host = 'MySQL-8.0'; // Сервер БД (обычно localhost на OpenServer)
+$host = '127.127.126.26'; // Сервер БД (обычно localhost на OpenServer)
 $dbname = 'ayanami'; // Имя вашей базы данных
 $username = 'root'; // Имя пользователя БД (по умолчанию в OpenServer - root)
 $password = ''; // Пароль БД (по умолчанию в OpenServer пустой)

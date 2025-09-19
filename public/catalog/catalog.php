@@ -90,7 +90,6 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </a>
                             </div>
                             <h1><?= htmlspecialchars($product['name']) ?></h1>
-                            <p class="product-category">Категория: <?= htmlspecialchars($product['category']) ?></p>
                             <p><?= htmlspecialchars($product['description']) ?></p>
                             <div class="price-card">
                                 <p class="price"><?= number_format($product['price'], 2, '.', ' ') ?> руб.</p>

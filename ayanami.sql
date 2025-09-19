@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.127.126.26:3306
--- Время создания: Сен 15 2025 г., 03:07
+-- Время создания: Сен 20 2025 г., 00:11
 -- Версия сервера: 8.0.35
 -- Версия PHP: 8.2.18
 
@@ -53,9 +53,9 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `name`, `slug`, `created_at`) VALUES
-(1, 'Лонгсливы', 'lonsglivy', '2025-09-15 03:05:43'),
-(2, 'Зип-худи', 'zip-hudi', '2025-09-15 03:05:43'),
-(3, 'Куртки', 'kurtki', '2025-09-15 03:05:43');
+(1, 'лонгслив', 'lonsglivy', '2025-09-15 03:05:43'),
+(2, 'зип-худи', 'zip-hudi', '2025-09-15 03:05:43'),
+(3, 'куртка', 'kurtki', '2025-09-15 03:05:43');
 
 -- --------------------------------------------------------
 
@@ -112,11 +112,11 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price`) 
 CREATE TABLE `products` (
   `id` int NOT NULL,
   `name` varchar(255) NOT NULL,
-  `description` text,
+  `description` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `price` decimal(10,2) NOT NULL,
-  `image` varchar(255) DEFAULT NULL,
-  `category` varchar(100) DEFAULT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP
+  `image` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `category` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
@@ -124,11 +124,11 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `name`, `description`, `price`, `image`, `category`, `created_at`) VALUES
-(3, 'Cute', 'трендовая куртка 2025', 13000.00, 'uploads/products/product_1757866557.jpg', 'лонгслив', '2025-09-15 00:15:57'),
-(4, 'Topchik', 'зипка нового поколения', 14000.00, 'uploads/products/product_1757866686.jpg', 'лонгслив', '2025-09-15 00:18:06'),
-(5, 'Chotko', 'для любителей чего-то бархатного', 12500.00, 'uploads/products/product_1757866790.jpg', 'лонгслив', '2025-09-15 00:19:50'),
-(6, 'Ratatui', 'лучшая зипка для зимней охоты', 13500.00, 'uploads/products/product_1757867860.jpg', 'лонгслив', '2025-09-15 00:37:40'),
-(7, 'Shonya', 'дизайнерский камуфляж или классический черный - решать тебе', 16000.00, 'uploads/products/product_1757867941.jpg', 'лонгслив', '2025-09-15 00:39:01'),
+(3, 'Cute', 'трендовая куртка 2025', 13000.00, 'uploads/products/product_1757866557.jpg', 'куртка', '2025-09-15 00:15:57'),
+(4, 'Topchik', 'зипка нового поколения', 14000.00, 'uploads/products/product_1757866686.jpg', 'зип-худи', '2025-09-15 00:18:06'),
+(5, 'Chotko', 'для любителей чего-то бархатного', 12500.00, 'uploads/products/product_1757866790.jpg', 'куртка', '2025-09-15 00:19:50'),
+(6, 'Ratatui', 'лучшая зипка для зимней охоты', 13500.00, 'uploads/products/product_1757867860.jpg', 'зип-худи', '2025-09-15 00:37:40'),
+(7, 'Shonya', 'дизайнерский камуфляж или классический черный - решать тебе', 16000.00, 'uploads/products/product_1757867941.jpg', 'куртка', '2025-09-15 00:39:01'),
 (8, 'Archi', 'лонг как у персонажей мультфильмов', 10000.00, 'uploads/products/product_1757868153.jpg', 'лонгслив', '2025-09-15 00:42:33'),
 (9, 'Sherman', 'полуфутболка полулонг...', 10500.00, 'uploads/products/product_1757868203.jpg', 'лонгслив', '2025-09-15 00:43:23');
 
@@ -215,7 +215,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT для таблицы `categories`
