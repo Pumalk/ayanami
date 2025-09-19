@@ -152,7 +152,10 @@ foreach ($cart_items as $item) {
             <div class="avatar-section">
                 <div class="avatar-preview">
                     <?php if (!empty($user['avatar'])): ?>
-                        <img src="../<?= htmlspecialchars($user['avatar']) ?>" alt="Аватар пользователя">
+                            <?php $avatar = htmlspecialchars($user['avatar']); ?>
+                            <a href="../<?= $avatar ?>" class="lightbox-trigger">
+                                <img src="../<?= $avatar ?>" alt="Аватар пользователя" class="clickable-image">
+                            </a>
                     <?php else: ?>
                         <div class="no-avatar">Нет аватара</div>
                     <?php endif; ?>
@@ -285,5 +288,6 @@ foreach ($cart_items as $item) {
         <div class="f3">Ayanami@shop.ru</div>
         <div class="f4">© 2024-2025 Магазин одежды "Аянами"</div>
     </footer>
+    <script src="../js/lightbox.js"></script>
 </body>
 </html>

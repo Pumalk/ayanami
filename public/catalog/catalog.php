@@ -84,7 +84,10 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <?php foreach ($products as $product): ?>
                         <div class="card">
                             <div>
-                                <img src="../<?= !empty($product['image']) ? htmlspecialchars($product['image']) : 'img/placeholder.jpg' ?>" alt="<?= htmlspecialchars($product['name']) ?>">
+                                <?php $img = !empty($product['image']) ? htmlspecialchars($product['image']) : 'img/placeholder.jpg'; ?>
+                                <a href="../<?= $img ?>" class="lightbox-trigger">
+                                    <img src="../<?= $img ?>" alt="<?= htmlspecialchars($product['name']) ?>" class="clickable-image">
+                                </a>
                             </div>
                             <h1><?= htmlspecialchars($product['name']) ?></h1>
                             <p class="product-category">Категория: <?= htmlspecialchars($product['category']) ?></p>
@@ -108,5 +111,6 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="f3">admin@ayanami.ru</div>
         <div class="f4">© 2024-2025 Ayanami. Права не защищены.</div>
     </footer>
+    <script src="../js/lightbox.js"></script>
 </body>
 </html>

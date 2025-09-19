@@ -269,7 +269,11 @@ if (isset($_GET['message'])) {
 
                     <div class="form-group">
                         <label for="category">Категория:</label>
-                        <input type="text" id="category" name="category" value="<?= htmlspecialchars($editProduct['category'] ?? '') ?>">
+                        <select id="category" name="category">
+                            <option value="зип-худи" <?= (isset($editProduct['category']) && $editProduct['category'] === 'зип-худи') ? 'selected' : '' ?>>Зип-худи</option>
+                            <option value="куртка" <?= (isset($editProduct['category']) && $editProduct['category'] === 'куртка') ? 'selected' : '' ?>>Куртка</option>
+                            <option value="лонгслив" <?= (isset($editProduct['category']) && $editProduct['category'] === 'лонгслив') ? 'selected' : '' ?>>Лонгслив</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
@@ -279,7 +283,10 @@ if (isset($_GET['message'])) {
                         
                         <?php if ($editProduct && $editProduct['image']): ?>
                             <div class="image-preview">
-                                <img src="../<?= htmlspecialchars($editProduct['image']) ?>" alt="Текущее изображение" style="max-width: 200px; margin-top: 10px;">
+                                <?php $editImg = htmlspecialchars($editProduct['image']); ?>
+                                <a href="../<?= $editImg ?>" class="lightbox-trigger">
+                                    <img src="../<?= $editImg ?>" alt="Текущее изображение" style="max-width: 200px; margin-top: 10px;" class="clickable-image">
+                                </a>
                                 <p>Текущее изображение</p>
                                 <label>
                                     <p><input type="checkbox" name="remove_image" value="1" width="10px" style="text-align: left;">Удалить текущее изображение</p> 
@@ -319,7 +326,10 @@ if (isset($_GET['message'])) {
                             <td><?= $product['id'] ?></td>
                             <td>
                                 <?php if ($product['image']): ?>
-                                    <img src="../<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" class="table-image">
+                                    <?php $pimg = htmlspecialchars($product['image']); ?>
+                                    <a href="../<?= $pimg ?>" class="lightbox-trigger">
+                                        <img src="../<?= $pimg ?>" alt="<?= htmlspecialchars($product['name']) ?>" class="table-image clickable-image">
+                                    </a>
                                 <?php else: ?>
                                     <span>Нет изображения</span>
                                 <?php endif; ?>
@@ -388,7 +398,10 @@ if (isset($_GET['message'])) {
                             <tr>
                                 <td>
                                     <?php if ($item['image']): ?>
-                                        <img src="../<?= htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['name']) ?>" class="table-image" style="width: 40px; height: 40px;">
+                                        <?php $iimg = htmlspecialchars($item['image']); ?>
+                                        <a href="../<?= $iimg ?>" class="lightbox-trigger">
+                                            <img src="../<?= $iimg ?>" alt="<?= htmlspecialchars($item['name']) ?>" class="table-image clickable-image" style="width: 40px; height: 40px;">
+                                        </a>
                                     <?php endif; ?>
                                     <?= htmlspecialchars($item['name']) ?>
                                 </td>
@@ -524,5 +537,6 @@ if (isset($_GET['message'])) {
             }
         });
     </script>
+        <script src="../js/lightbox.js"></script>
 </body>
 </html>
