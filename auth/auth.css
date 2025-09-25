@@ -1,0 +1,214 @@
+@font-face{
+    font-family: 'Helmswald';
+    src: url(../fonts/Helmswald.otf);
+}
+
+html {
+    height: 100%;
+    scroll-behavior: smooth;
+    background-color: white;
+}
+
+body {
+    font-family: 'Helmswald';
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    color: white;
+    text-align: center;
+}
+
+html, body {
+    height: 100%;
+}
+
+header{
+    margin-top: 2%;
+    margin-bottom: 2%;
+    text-decoration: none;
+}
+
+/*основная часть*/
+main{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.forms-container {
+    position: relative;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: -2px;
+    position: relative;
+    z-index: 2;
+}
+
+.form-tabs label {
+    padding: 15px 40px;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    margin: 0 2px;
+    border-radius: 5px 5px 0 0;
+    transition: all 0.3s ease;
+    transform: scale(0.95);
+}
+
+.form-tabs label:hover {
+    background: rgba(128,128,128, 0.9);
+    transform: scale(1);
+}
+
+input[name="slider"] {
+    display: none;
+}
+
+#login:checked ~ .form-tabs .login-tab,
+#register:checked ~ .form-tabs .register-tab {
+    background: rgba(0,0,0, 0.7);
+    border-bottom: 3px solid gray;
+    transform: scale(1);
+}
+
+.forms-wrapper {
+    position: relative;
+    background: rgba(0,0,0, 0.7);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 400px;
+    text-align: center;
+}
+
+#register:checked ~ .forms-wrapper {
+    width: 650px;
+}
+
+.form-box {
+    padding: 10px 0;
+    width: 100%;
+    box-sizing: border-box;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#login:checked ~ .forms-wrapper .login-form,
+#register:checked ~ .forms-wrapper .register-form {
+    opacity: 1;
+    transform: translateX(0);
+    position: relative;
+}
+
+#login:checked ~ .forms-wrapper .register-form,
+#register:checked ~ .forms-wrapper .login-form {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    padding: 0;
+    width: auto;
+    transition: all 0.3s ease;
+}
+
+.form-group label {
+    display: block;
+    margin: 15px 0 5px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.form-group input {
+    width: 60%;
+    margin: 0 40px;
+    padding: 12px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    border-color: gray;
+    background: rgba(255, 255, 255, 0.15);
+    outline: none;
+}
+
+button[type="submit"] {
+    font-family: 'Helmswald';
+    width: 60%;
+    margin: 25px 10px 0;
+    padding: 14px;
+    background: gray;
+    color: black;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+button[type="submit"]:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+/*футер*/
+footer {
+    font-family: sans-serif;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    background: white;
+    color: black;
+    text-align: center; /* Центрирование текста */
+    padding: 20px 0; /* Внутренние отступы */
+    width: 100%; /* Ширина 100% */
+    position: fixed; /* Подвал как приклеенный */
+    bottom: 0; /* Положение внизу */
+}
+
+.f1 { grid-area: 1 / 1 / 2 / 2; }
+.f2 { grid-area: 1 / 2 / 2 / 3; }
+.f3 { grid-area: 1 / 3 / 2 / 4; }
+.f4 { grid-area: 2 / 1 / 3 / 4; }
+
+
+/*мелкие исправления*/
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(6px); }
+    75% { transform: translateX(-6px); }
+}
+
+a{
+    text-decoration: none; /* Убираем подчеркивание */
+    font-weight: bold; /* Жирный текст */
+    color: black;
+    transition: 0.3s;
+}
+a:hover{
+    color:gray; /* Цвет текста при наведении */
+}
+
+img{
+    max-width: 100%;
+}

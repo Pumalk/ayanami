@@ -1,0 +1,114 @@
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="lk.css">
+    <title>Ayanami - Личный кабинет</title>
+</head>
+<body>
+    <header>
+        <ul class="row1">
+                <li><a href="../index.html">Главная</a></li>
+                <li><a href="../catalog/catalog.html">Меню</a></li>
+        </ul>
+        <ul class="row2">
+            <li><a href="#">Выйти из аккаунта</a></li>
+        </ul>
+    </header>
+    
+    <main>
+        <section class="profile-section">
+            <h2>Личный кабинет</h2>
+            <!-- Секция аватара -->
+        <div class="avatar-section">
+            <div class="avatar-preview">
+                    <img src="" alt="Аватар">
+                    <div class="no-avatar">Нет аватара</div>
+            </div>
+            <div class="zagruzka">
+                <form method="post">
+                <input type="file">
+                <button type="submit">Загрузить аватар</button>
+                </form>
+            </div>
+        </div>
+    
+            <details class="profile-details">
+                <summary>Показать/Скрыть данные</summary>
+                <div class="profile-info">
+                    <p><strong>Имя:</strong> Иван Иванов</p>
+                    <p><strong>Email:</strong> ivan@example.com</p>
+                    <p><strong>Телефон:</strong> +7 912 345-67-89</p>
+                </div>
+            </details>
+    
+            <details class="edit-details">
+                <summary>Редактировать данные</summary>
+                <form class="edit-form">
+                    <label>
+                        Имя:
+                        <input type="text" name="edit-name" value="Иван Иванов">
+                    </label>
+                    <label>
+                        Email:
+                        <input type="email" name="edit-email" value="ivan@example.com">
+                    </label>
+                    <label>
+                        Телефон:
+                        <input type="tel" name="edit-phone" value="+7 912 345-67-89">
+                    </label>
+                    <button type="submit">Сохранить</button>
+                </form>
+            </details>
+        </section>
+    
+        <section class="cart-section">
+            <h2>Корзина</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Товар</th>
+                        <th>Количество</th>
+                        <th>Цена</th>
+                        <th>Итого</th>
+                        <th>Удалить</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Борщ</td>
+                        <td>2</td>
+                        <td>150 ₽</td>
+                        <td>300 ₽</td>
+                        <td><button class="remove-btn">✕</button></td>
+                    </tr>
+                </tbody>
+            </table>
+    
+            <div class="total-price">
+                Общая сумма: <strong>300 ₽</strong>
+            </div>
+    
+            <h2>Оформление заказа</h2>
+            <form class="order-form">
+                <label>
+                    Телефон:
+                    <input type="tel" name="phone" required>
+                </label>
+                <label>
+                    Адрес доставки:
+                    <textarea name="address" rows="3" required></textarea>
+                </label>
+                <button type="submit">Оформить заказ</button>
+            </form>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="f1">+7 983 539-26-40</div>
+        <div class="f2">Ayanami.ru</div>
+        <div class="f3">Ayanami@shop.ru</div>
+        <div class="f4">© 2024-2025 Магазин одежды "Аянами"</div>
+    </footer>
+</body>
+</html>

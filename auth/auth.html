@@ -1,0 +1,86 @@
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="auth.css">
+    <title>Ayanami - Вход</title>
+</head>
+<body>
+    <header>
+        <a href="../index.html">На главную</a>
+    </header>
+    <main>
+    <div class="forms-container">
+        <input type="radio" name="slider" id="login" checked>
+        <input type="radio" name="slider" id="register">
+        
+        <div class="form-tabs">
+            <label for="login" class="login-tab">Вход</label>
+            <label for="register" class="register-tab">Регистрация</label>
+        </div>
+
+        <div class="forms-wrapper">
+            <div class="login-form form-box">
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="username">Имя пользователя:</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Пароль:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+
+
+                    <button type="submit" name="login_submit">Войти</button>
+                </form>
+            </div>
+
+            <div class="register-form form-box">
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="first_name">Имя:</label>
+                        <input type="text" id="first_name" name="first_name" value="" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="last_name">Фамилия:</label>
+                        <input type="text" id="last_name" name="last_name" value="" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" value="" required>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="birth_date">Дата рождения:</label>
+                        <input type="date" id="birth_date" name="birth_date" value="" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reg_username">Имя пользователя:</label>
+                        <input type="text" id="reg_username" name="reg_username" value="" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reg_password">Пароль:</label>
+                        <input type="password" id="reg_password" name="reg_password" required>
+                    </div>
+
+                    <button type="submit" name="register_submit">Зарегистрироваться</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+    <footer>
+        <div class="f1">+7 983 539-26-40</div>
+        <div class="f2">Ayanami.ru</div>
+        <div class="f3">Ayanami@shop.ru</div>
+        <div class="f4">© 2024-2025 Магазин одежды "Аянами"</div>
+    </footer>
+</body>
+</html>
